@@ -1,0 +1,19 @@
+{
+  "author": "Austin King <shout@ozten.com> (http://ozten.com)",
+  "name": "connect-cachify",
+  "description": "Connect middleware to provide easy frontend caching.",
+  "version": "0.0.1",
+  "homepage": "http://github.com/ozten/connect-cachify",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ozten/connect-browserid.git"
+  },
+  "main": "index",
+  "engines": {
+    "node": ">=0.4.7"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
