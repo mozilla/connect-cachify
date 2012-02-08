@@ -1,7 +1,7 @@
 # Cachify #
 The ``connect-cachify`` makes is super easy to have fantastic frontend caching behavior.
 
-It is a set of middlware, helpers, etc for Node.js express framework. Technically connect is the only dependency.
+It is a set of middlware, helpers, etc for Node.js express framework.
 
 ## Installation ##
 
@@ -13,7 +13,7 @@ It is a set of middlware, helpers, etc for Node.js express framework. Technicall
         express = require('express'),
         cachify = require('connect-cachify'),
 
-        app = express.createServer();
+    app = express.createServer();
 
 ## Middleware ##
 
@@ -41,7 +41,7 @@ It is a set of middlware, helpers, etc for Node.js express framework. Technicall
 
 A request for ``/js/fa6d51a13a245a90aeb48eeca0e52396/main.min.js`` would have the req.path rewritten to /js/main.min.js, so that other middleware will work properly.
 
-Note: You must put cachify.setup before static or other connect middleware which work with this request.
+Note: You **must** put ``cachify.setup`` before static or other connect middleware which works with these same requests.
 
 ## Helpers
 
@@ -71,7 +71,7 @@ When production was set to false, jslinks will produce:
     <script src="/js/laughter.js"></script>
 
 ## Options ##
-The following are optinal config for ``cachify.setup``
+The following are optional config for ``cachify.setup``
 
 * url_prefix - A url prefix to append to links generated in ``jslinks`` and ``csslinks``. **Example:** "http://cdn.example.com/media/"
 
