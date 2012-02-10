@@ -79,9 +79,23 @@ The following are optional config for ``cachify.setup``
 
 Using ``url_prefix``, one could support dark launches, since all assets are revisioned with hashes and the CDN network would service your request.
 
+## Magick ##
+So how does cachify work?
+
+When you cachify a url, it adds an md5 hash of the file's contents into the URL it generates.
+
+    http://example.com/cbcb1e865e61c08a68a4e0bfa293e806/stylo.css
+
+Incoming requests are checked for this md5 hash. If present and if we' know about the resource
+(either via options or the file exists on disk), then the request path is rewritten back to
+``/stylo.css``, so that another route can process the request.
+
+These requests are served up with expires headers that are very long lived, so a user's browser will only request them once.
+
 ## Wordpress Cachify ##
 Does this all sound like gobbledeegook? Maybe your looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
 
 ## Questions ##
 
 * Should we always put hash in urls, even in development mode? Maybe that is a config flag, so we can do that while writing cachify?
+* If you edit a file, cachify won't notice... turn off in dev or add file stat check?
