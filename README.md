@@ -45,6 +45,8 @@ A request for ``/js/fa6d51a13a245a90aeb48eeca0e52396/main.min.js`` would have th
 
 Note: You **must** put ``cachify.setup`` before static or other connect middleware which works with these same requests.
 
+It's encouraged to reuse the ``js`` and ``css`` config with other connect compilers, such as less or connect-assets.
+
 ## Helpers
 
     app.helpers(cachify.helpers);
@@ -92,6 +94,13 @@ Incoming requests are checked for this md5 hash. If present and if we' know abou
 
 These requests are served up with expires headers that are very long lived, so a user's browser will only request them once.
 
+## Debugging ##
+To debug cachify's behavior in production, pass in the following parameter in your options block:
+
+    setup({ debug: true, ...});
+
+Now even in development mode, cache busting URLs will be generated, so you can troubleshoot any problems cachify magick is causing you.
+
 ## Wordpress Cachify ##
 Does this all sound like gobbledeegook? Maybe your looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
 
@@ -99,3 +108,8 @@ Does this all sound like gobbledeegook? Maybe your looking for [Wordpress cachif
 
 * Should we always put hash in urls, even in development mode? Maybe that is a config flag, so we can do that while writing cachify?
 * If you edit a file, cachify won't notice... turn off in dev or add file stat check?
+* Using a deployment SHA is good for JS and CSS, but not good for images, etc...
+* Etags... useful for API, page views, no so much on static assets?
+
+* express compiler
+** Less and CSS image sha, etc?
