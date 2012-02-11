@@ -101,6 +101,12 @@ To debug cachify's behavior in production, pass in the following parameter in yo
 
 Now even in development mode, cache busting URLs will be generated, so you can troubleshoot any problems cachify magick is causing you.
 
+## Development ##
+
+Patches are welcome! To run unit tests...
+
+    nodeunit test
+
 ## Wordpress Cachify ##
 Does this all sound like gobbledeegook? Maybe your looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
 
