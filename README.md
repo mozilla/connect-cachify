@@ -29,11 +29,11 @@ This does not provide in-memory caching, middleware caching, or many other types
         ]
       },
       css: {
-        "home.min.css": [
+        "/css/home.min.css": [
           '/css/reset.css',
           '/css/home.css'
         ],
-        "dashboard.min.css": [
+        "/css/dashboard.min.css": [
           '/css/reset.css',
           '/css/common.css'
           '/css/dashboard.css'
@@ -56,7 +56,7 @@ It's encouraged to reuse the ``js`` and ``css`` config with other connect compil
     ...
     <head>
       <title>Dashboard: Hamsters of North America</title>
-      <%- cachify_css('dashboard.min.css') %>
+      <%- cachify_css('/css/dashboard.min.css') %>
     </head>
     <body>
     ...
