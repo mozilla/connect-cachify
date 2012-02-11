@@ -8,7 +8,7 @@ var cachify  = require('../lib/connect-cachify'),
 var resetConfig = function () {
   cachify.setup({
     production: true,
-    root: ['.'],
+    root: '.',
     debug: false
   });
 };
@@ -78,7 +78,7 @@ exports.setup = nodeunit.testCase({
         mddlwr,
         links;
     mddlwr = cachify.setup(assets, {
-                             root: ['/tmp'],
+                             root: '/tmp',
                              production: false,
                              debug: true});
     links = cachify.cachify_js("/js/main.min.js").split('\n');
@@ -104,7 +104,7 @@ exports.setup = nodeunit.testCase({
         },
         mddlwr;
     mddlwr = cachify.setup(assets, {
-                      root: ['/tmp'],
+                      root: '/tmp',
                       production: false
     });
     var links = cachify.cachify_js("/js/main.min.js").split('\n');
@@ -139,7 +139,7 @@ exports.setup = nodeunit.testCase({
         mddlwr;
     mddlwr = cachify.setup(
         assets, {
-          root: ['/tmp']
+          root: '/tmp'
     });
     var links = cachify.cachify_js("/js/main.min.js");
     test.equal(links, '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js"></script>',
