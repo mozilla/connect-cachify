@@ -2,11 +2,15 @@
   "author": "Austin King <shout@ozten.com> (http://ozten.com)",
   "name": "connect-cachify",
   "description": "Connect middleware to provide easy frontend caching.",
-  "version": "0.0.1",
+  "keywords": ["cache", "HTTP", "expires", "asset", "max-age", "caching"],
+  "version": "0.0.2",
   "homepage": "http://github.com/mozilla/connect-cachify",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mozilla/connect-browserid.git"
+    "url": "https://github.com/mozilla/connect-cachify.git"
+  },
+  "bugs": { 
+    "url": "https://github.com/mozilla/connect-cachify/issues"
   },
   "main": "index",
   "engines": {
