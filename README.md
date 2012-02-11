@@ -1,9 +1,12 @@
 # Cachify #
-``connect-cachify`` makes having proper browser cache and HTTP caching behavior for assets easier.
+``connect-cachify`` makes having proper browser cache and HTTP caching
+behavior for assets easier.
 
-It is a set of middlware, helpers, etc for Node.js express framework.
+It is a set of middleware, helpers, etc for Node.js express framework.
 
-This does not provide in-memory caching, middleware caching, or many other types of caching. Cashify is focused on reducing the number of HTTP requests to your web nodes.
+This does not provide in-memory caching, middleware caching, or many other
+types of caching. Cashify is focused on reducing the number of HTTP requests
+to your web nodes.
 
 ## Installation ##
 
@@ -18,17 +21,12 @@ This does not provide in-memory caching, middleware caching, or many other types
     app = express.createServer();
 
 ## Middleware ##
-
-    app.use(cachify.setup({
-      production: your_config['use_minified_assets'],
-      js: {
+    var assets = {
         "/js/main.min.js": [
           '/js/lib/jquery.js',
           '/js/magick.js',
           '/js/laughter.js'
         ]
-      },
-      css: {
         "/css/home.min.css": [
           '/css/reset.css',
           '/css/home.css'
@@ -38,14 +36,23 @@ This does not provide in-memory caching, middleware caching, or many other types
           '/css/common.css'
           '/css/dashboard.css'
         ]
-      }      
+    };
+    app.use(cachify.setup(assets, {
+      root: __dirname,
+      production: your_config['use_minified_assets'],
     }));
 
-A request for ``/js/fa6d51a13a245a90aeb48eeca0e52396/main.min.js`` would have the req.path rewritten to /js/main.min.js, so that other middleware will work properly.
+``setup`` takes two parameters: assets and options. Assets is an associative
+array where the keys are your production urls, and the value is a list of
+development urls that produce the same asset.
 
-Note: You **must** put ``cachify.setup`` before static or other connect middleware which works with these same requests.
+We'll discussion options in a section below.
 
-It's encouraged to reuse the ``js`` and ``css`` config with other connect compilers, such as less or connect-assets.
+Cachify middleware is now enabled. Let's look at this after hooking up the view
+helpers.
+
+Note: You **must** put ``cachify.setup`` before static or other connect
+middleware which works with these same requests.
 
 ## Helpers
 
@@ -64,7 +71,8 @@ It's encouraged to reuse the ``js`` and ``css`` config with other connect compil
     </body>
     ...
 
-In production mode, a call to ``cachify_js`` will produce a single script tag like
+In production mode, a call to ``cachify_js`` will produce a single script tag
+like:
 
     <script src="/js/fa6d51a13a245a90aeb48eeca0e52396/main.min.js"></script>
 
@@ -74,32 +82,68 @@ When production was set to false, ``cachify_js`` will produce:
     <script src="/js/magick.js"></script>
     <script src="/js/laughter.js"></script>
 
+The middleware makes caching transparent. A request for
+``/fa6d51a13a245a90aeb48eeca0e52396/js/main.min.js`` will have the req.url
+rewritten to ``/js/main.min.js``, so that other middleware will work properly.
+
+The middleware sets the cache expiration headers to the Mayan Apocalypse, and
+does it's best to ensure browsers won't request that version of
+``/js/main.min.js`` again.
+
+A goal is for this module to work well with other connect compilers, such as
+[LESS](http://lesscss.org/) or
+[connect-assets](https://github.com/TrevorBurnham/connect-assets).
+
 ## Options ##
 The following are optional config for ``cachify.setup``
 
-* url_prefix - A url prefix to append to links generated in ``cachify_js`` and ``cachify_css``. **Example:** "http://cdn.example.com/media/"
+* root - Path where static assets are stored on disk. Same value as you'd pass
+to the ``static`` middleware.
 
-Using ``url_prefix``, one could support dark launches, since all assets are revisioned with hashes and the CDN network would service your request.
+* production - Boolean indicating if your in development or production mode.
+    Effects how links for js and css files are generated.
+
+* root - A fully qualified path which is a root where static
+    resources are served up. This is the same value you'd send to the
+    static middleware.
+
+* debug - Boolean indicating we should always re-write urls with a hash.
 
 ## Magick ##
 So how does cachify work?
 
-When you cachify a url, it adds an md5 hash of the file's contents into the URL it generates.
+When you cachify a url, it adds an MD5 hash of the file's contents into the URL
+it generates:
 
     http://example.com/cbcb1e865e61c08a68a4e0bfa293e806/stylo.css
 
-Incoming requests are checked for this md5 hash. If present and if we' know about the resource
-(either via options or the file exists on disk), then the request path is rewritten back to
-``/stylo.css``, so that another route can process the request.
+Incoming requests are checked for this MD5 hash. If present and if we' know
+about the resource (either via options or the file exists on disk), then the
+request path is rewritten back to ``/stylo.css``, so that another route can
+process the request.
 
 These requests are served up with expires headers that are very long lived, so a user's browser will only request them once.
 
+Cachify **doesn't** attempt to **find an older version** of your resource,
+if the MD5 has was for an older file.
+
+## Status ##
+
+This module is brand spanking new. Please file
+[issues](https://github.com/mozilla/connect-cachify/issues) with ideas, bugs,
+etc.
+
+It was created as part of the [BrowserID](https://github.com/mozilla/browserid)
+project.
+
 ## Debugging ##
-To debug cachify's behavior in production, pass in the following parameter in your options block:
+To debug cachify's hashed url behavior, pass in the following parameter in
+your options block:
 
     setup({ debug: true, ...});
 
-Now even in development mode, cache busting URLs will be generated, so you can troubleshoot any problems cachify magick is causing you.
+Now even in development mode, cache busting URLs will be generated, so you
+can troubleshoot any problems cachify magick is causing you.
 
 ## Development ##
 
@@ -108,14 +152,4 @@ Patches are welcome! To run unit tests...
     nodeunit test
 
 ## Wordpress Cachify ##
-Does this all sound like gobbledeegook? Maybe your looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
-
-## Questions ##
-
-* Should we always put hash in urls, even in development mode? Maybe that is a config flag, so we can do that while writing cachify?
-* If you edit a file, cachify won't notice... turn off in dev or add file stat check?
-* Using a deployment SHA is good for JS and CSS, but not good for images, etc...
-* Etags... useful for API, page views, no so much on static assets?
-
-* express compiler
-** Less and CSS image sha, etc?
+Does this all sound like gobbledygook? Maybe your looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
