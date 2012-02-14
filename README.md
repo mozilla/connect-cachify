@@ -54,10 +54,6 @@ helpers.
 Note: You **must** put ``cachify.setup`` before static or other connect
 middleware which works with these same requests.
 
-## Helpers
-
-    app.helpers(cachify.helpers);
-
 ## In an EJS template
 
     ...
@@ -104,6 +100,8 @@ to the ``static`` middleware.
     Effects how links for js and css files are generated.
 
 * debug - Boolean indicating we should always re-write urls with a hash.
+
+For full details, see the [API documentation](docs/API.md).
 
 ## Magick ##
 So how does cachify work?
