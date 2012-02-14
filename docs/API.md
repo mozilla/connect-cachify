@@ -28,9 +28,10 @@ See the example below for format.
       '/js/main.min.js': ['/js/jquery.js', '/js/widget.js', '/js/main.js'],
       '/js/dashboard.js': ['/js/jquery.js', '/js/dashboard.js'],
       '/css/main.min.css': ['/css/reset.css', '/main.css'] };
-    app.use(cachify.setup(assets), { root: __dirname }));
+    app.use(cachify.setup(assets, { root: __dirname }));
 
 The ``setup`` middleware will expose several **helpers** to your views:
+
 * cachify_js
 * cachify_css
 * cachify
@@ -38,12 +39,13 @@ The ``setup`` middleware will expose several **helpers** to your views:
 Using the optional ``prefix`` will slightly improve middleware performance 
 when attempting to detect if a request is safe to re-write it's request url.
 
-## ``cachify_js(production_js_url, [options])`` ##
+## cachify_js(production_js_url, [options]) ##
 Helper function for generating ``script`` tags for your Javascript files.
 
 ``production_js_url`` is a url to your minified, production ready Javascript.
 
-``options`` is an optional dictionary with the following optional values:
+``options`` is an optional dictionary with the following optional value:
+
 * ``hash`` - MD5 hash to use instead of calculating from disk (**Default: none**)
 
 In production mode, a single script tag is generated, with a cache-busting
@@ -57,12 +59,13 @@ generated, one per dependent file from the ``assets`` argument to the ``setup`` 
     </body>
     </html>
 
-## ``cachify_css(production_css_url, [options])`` ##
+## cachify_css(production_css_url, [options]) ##
 Helper function for generating ``link`` tags for your CSS files.
 
 ``production_css_url`` is a url to your minified, production ready CSS.
 
-``options`` is an optional dictionary with the following optional values:
+``options`` is an optional dictionary with the following optional value:
+
 * ``hash`` - MD5 hash to use instead of calculating from disk (**Default: none**)
 
 In production mode, a single link tag is generated, with a cache-busting
@@ -76,12 +79,13 @@ generated, one per dependent file from the ``assets`` argument to the ``setup`` 
     </body>
     </html>
 
-## ``cachify(production_url, [options])`` ##
+## cachify(production_url, [options]) ##
 Lower level Helper function for generating HTML tags for your urls.
 
 ``production_url`` is a url to your minified, production asset.
 
 ``options`` is an optional dictionary with the following optional values:
+
 * ``hash`` - MD5 hash to use instead of calculating from disk (**Default: none**)
 * ``tag_format`` - String with one '%s' placeholder, which will be replaced each time with your production_url or development urls.
 
