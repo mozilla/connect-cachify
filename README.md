@@ -2,7 +2,7 @@
 ``connect-cachify`` makes having proper browser cache and HTTP caching
 behavior for assets easier.
 
-It is a set of middleware, helpers, etc for Node.js express framework.
+It is a set of middleware and view helper functions for the Node.js express framework.
 
 This does not provide in-memory caching, middleware caching, or many other
 types of caching. Cashify is focused on reducing the number of HTTP requests
@@ -26,7 +26,7 @@ to your web nodes.
           '/js/lib/jquery.js',
           '/js/magick.js',
           '/js/laughter.js'
-        ]
+        ],
         "/css/home.min.css": [
           '/css/reset.css',
           '/css/home.css'
@@ -102,10 +102,6 @@ to the ``static`` middleware.
 
 * production - Boolean indicating if your in development or production mode.
     Effects how links for js and css files are generated.
-
-* root - A fully qualified path which is a root where static
-    resources are served up. This is the same value you'd send to the
-    static middleware.
 
 * debug - Boolean indicating we should always re-write urls with a hash.
 

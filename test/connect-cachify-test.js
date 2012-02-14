@@ -22,7 +22,6 @@ var make_assets = function () { return {
 exports.setup = nodeunit.testCase({
   setUp: function (cb) {
     resetConfig();
-    console.log('setUp');
     step(
       fs.mkdir('/tmp/js', this),
       function (err) {
@@ -41,12 +40,11 @@ exports.setup = nodeunit.testCase({
         fs.writeFile('/tmp/js/main.js', "", "utf8", this);
       },
       function (err) {
-        console.log('finished setting up'); cb();
+        cb();
       }
     );
   },
   tearDown: function (cb) {
-    console.log('tearDown');
     step(
       fs.unlink('/tmp/js/main.js', this),
       function (err) {
@@ -75,8 +73,9 @@ exports.setup = nodeunit.testCase({
   },
   "Development mode with debug": function (test) {
     var assets = make_assets(),
-        mddlwr,
-        links;
+        files,
+        links,
+        mddlwr;
     mddlwr = cachify.setup(assets, {
                              root: '/tmp',
                              production: false,
@@ -84,6 +83,8 @@ exports.setup = nodeunit.testCase({
     links = cachify.cachify_js("/js/main.min.js").split('\n');
     test.equal(links[0], '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/lib/jquery.js"></script>',
               "debug option puts hash in all urls");
+    files = cachify.cachify("/js/main.min.js", {tag_format: '<script src="%s" defer></script>'}).split('\n');
+    test.equal(files[0], '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/lib/jquery.js" defer></script>');
     test.done();
   },
   "Development mode": function (test) {
@@ -108,12 +109,14 @@ exports.setup = nodeunit.testCase({
                       production: false
     });
     var links = cachify.cachify_js("/js/main.min.js").split('\n');
-    console.log('links', links.length);
     test.ok(links.length, "Multiple script tags");
     test.equal(links[0], '<script src="/js/lib/jquery.js"></script>',
               "No hashes in all urls during development");
+    var files = cachify.cachify("/js/main.min.js").split('\n');
+    test.ok(files.length, "Multiple script tags");
+    test.equal(files[0], '/js/lib/jquery.js',
+              "No hashes in all urls during development");
     mddlwr(req, resp, function () {
-      console.log(resp.state);
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
       test.ok(resp.state.header > 0);
@@ -141,14 +144,51 @@ exports.setup = nodeunit.testCase({
         assets, {
           root: '/tmp'
     });
-    var links = cachify.cachify_js("/js/main.min.js");
-    test.equal(links, '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js"></script>',
+    var link = cachify.cachify_js("/js/main.min.js");
+    test.equal(link, '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js"></script>',
               "Hashes in all urls in production");
+    var file = cachify.cachify("/js/main.min.js");
+    test.equal(file, "/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js");
     mddlwr(req, resp, function () {
-      console.log(resp.state);
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
+      test.ok(resp.state.cachify);
       test.ok(resp.state.header > 0);
+      test.equal(req.url, '/js/main.min.js');
+      test.done();
+    });
+  },
+  "Custom prefix works with non-file assets": function (test) {
+    var assets = make_assets(),
+        req = {
+          url: '/cachify/d41d8cd98f00b204e9800998ecf8427e/other'
+        },
+        resp = {
+          state: {},
+          local: function (key, value) {
+            this.state[key] = value;
+          },
+          setHeader: function (key, value) {
+            this.state[key] = value;
+            if (!this.state['header']) this.state['header'] = 0;
+            this.state['header'] += 1;
+          }
+        },
+        mddlwr;
+    mddlwr = cachify.setup(
+        assets, {
+          prefix: 'cachify',
+          root: '/tmp'
+        });
+    var link = cachify.cachify_js("/other", {hash: 'd41d8cd98f00b204e9800998ecf8427e'});
+    test.equal(link, '<script src="/cachify/d41d8cd98f00b204e9800998ecf8427e/other"></script>');
+
+    mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_js);
+      test.ok(resp.state.cachify_css);
+      test.ok(resp.state.cachify);
+      test.ok(resp.state.header > 0);
+      test.equal(req.url, '/other');
       test.done();
     });
   }
