@@ -21,6 +21,11 @@
   },
   "devDependencies": {
     "nodeunit": ">=0.6.4",
-    "step": ">=0.0.5"
+    "step": ">=0.0.5",
+    "express": "2.5.8",
+    "ejs": "0.6.1"
+  },
+  "scripts": {
+    "test": "nodeunit test"
   }
 }
