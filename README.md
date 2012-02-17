@@ -118,8 +118,6 @@ process the request.
 
 These requests are served up with expires headers that are very long lived, so a user's browser will only request them once.
 
-**Note:** Cachify attempts to control cache related headers, so it will remove or reset cache headers set by other middleware. Example: ``ETag`` and ``Last-Modified`` are set by static middleware, but this module discards them.
-
 Cachify **doesn't** attempt to **find an older version** of your resource,
 if the MD5 has was for an older file.
 
