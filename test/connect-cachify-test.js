@@ -101,6 +101,9 @@ exports.setup = nodeunit.testCase({
             this.state[key] = value;
             if (!this.state['header']) this.state['header'] = 0;
             this.state['header'] += 1;
+          },
+          on: function (name, cb) {
+
           }
         },
         mddlwr;
@@ -137,6 +140,9 @@ exports.setup = nodeunit.testCase({
             this.state[key] = value;
             if (!this.state['header']) this.state['header'] = 0;
             this.state['header'] += 1;
+          },
+          on: function (name, cb) {
+
           }
         },
         mddlwr;
@@ -172,6 +178,9 @@ exports.setup = nodeunit.testCase({
             this.state[key] = value;
             if (!this.state['header']) this.state['header'] = 0;
             this.state['header'] += 1;
+          },
+          on: function (name, cb) {
+
           }
         },
         mddlwr;
