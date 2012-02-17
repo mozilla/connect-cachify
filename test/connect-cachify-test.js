@@ -81,16 +81,16 @@ exports.setup = nodeunit.testCase({
                              production: false,
                              debug: true});
     links = cachify.cachify_js("/js/main.min.js").split('\n');
-    test.equal(links[0], '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/lib/jquery.js"></script>',
+    test.equal(links[0], '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
               "debug option puts hash in all urls");
     files = cachify.cachify("/js/main.min.js", {tag_format: '<script src="%s" defer></script>'}).split('\n');
-    test.equal(files[0], '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/lib/jquery.js" defer></script>');
+    test.equal(files[0], '<script src="/d41d8cd98f/js/lib/jquery.js" defer></script>');
     test.done();
   },
   "Development mode": function (test) {
     var assets = make_assets(),
         req = {
-          url: '/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js'
+          url: '/d41d8cd98f/js/main.min.js'
         },
         resp = {
           state: {},
@@ -129,7 +129,7 @@ exports.setup = nodeunit.testCase({
   "Production mode": function (test) {
     var assets = make_assets(),
         req = {
-          url: '/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js'
+          url: '/d41d8cd98f/js/main.min.js'
         },
         resp = {
           state: {},
@@ -151,10 +151,10 @@ exports.setup = nodeunit.testCase({
           root: '/tmp'
     });
     var link = cachify.cachify_js("/js/main.min.js");
-    test.equal(link, '<script src="/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js"></script>',
+    test.equal(link, '<script src="/d41d8cd98f/js/main.min.js"></script>',
               "Hashes in all urls in production");
     var file = cachify.cachify("/js/main.min.js");
-    test.equal(file, "/d41d8cd98f00b204e9800998ecf8427e/js/main.min.js");
+    test.equal(file, "/d41d8cd98f/js/main.min.js");
     mddlwr(req, resp, function () {
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
@@ -167,7 +167,7 @@ exports.setup = nodeunit.testCase({
   "Custom prefix works with non-file assets": function (test) {
     var assets = make_assets(),
         req = {
-          url: '/cachify/d41d8cd98f00b204e9800998ecf8427e/other'
+          url: '/cachify/d41d8cd98f/other'
         },
         resp = {
           state: {},
@@ -189,8 +189,8 @@ exports.setup = nodeunit.testCase({
           prefix: 'cachify',
           root: '/tmp'
         });
-    var link = cachify.cachify_js("/other", {hash: 'd41d8cd98f00b204e9800998ecf8427e'});
-    test.equal(link, '<script src="/cachify/d41d8cd98f00b204e9800998ecf8427e/other"></script>');
+    var link = cachify.cachify_js("/other", {hash: 'd41d8cd98f'});
+    test.equal(link, '<script src="/cachify/d41d8cd98f/other"></script>');
 
     mddlwr(req, resp, function () {
       test.ok(resp.state.cachify_js);
