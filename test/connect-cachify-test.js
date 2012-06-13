@@ -164,6 +164,45 @@ exports.setup = nodeunit.testCase({
       test.done();
     });
   },
+  "Production mode with absolute URL in prefix": function (test) {
+    var assets = make_assets(),
+        req = {
+          url: '/v/d41d8cd98f/js/main.min.js'
+        },
+        resp = {
+          state: {},
+          local: function (key, value) {
+            this.state[key] = value;
+          },
+          setHeader: function (key, value) {
+            this.state[key] = value;
+            if (!this.state['header']) this.state['header'] = 0;
+            this.state['header'] += 1;
+          },
+          on: function (name, cb) {
+
+          }
+        },
+        mddlwr;
+    mddlwr = cachify.setup(
+      assets, {
+        root: '/tmp',
+        prefix: 'http://example.com/v/'
+      });
+    var link = cachify.cachify_js("/js/main.min.js");
+    test.equal(link, '<script src="http://example.com/v/d41d8cd98f/js/main.min.js"></script>',
+              "Hashes in all urls in production");
+    var file = cachify.cachify("/js/main.min.js");
+    test.equal(file, "http://example.com/v/d41d8cd98f/js/main.min.js");
+    mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_js);
+      test.ok(resp.state.cachify_css);
+      test.ok(resp.state.cachify);
+      test.ok(resp.state.header > 0);
+      test.equal(req.url, '/js/main.min.js');
+      test.done();
+    });
+  },
   "Custom prefix works with non-file assets": function (test) {
     var assets = make_assets(),
         req = {
