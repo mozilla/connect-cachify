@@ -13,6 +13,7 @@ to your web nodes.
     npm install connect-cachify
 
 ## How to Use ##
+Instructions below are for Express 2, but Express 3 is also supported.
 
     var app,
         express = require('express'),
