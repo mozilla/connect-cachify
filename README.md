@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/mozilla/connect-cachify.png)](http://travis-ci.org/mozilla/connect-cachify)
 # Cachify #
 ``connect-cachify`` makes having proper browser cache and HTTP caching
 behavior for assets easier.
