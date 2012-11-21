@@ -69,6 +69,18 @@ middleware which works with these same requests.
     </body>
     ...
 
+## In a Jade template
+
+    ...
+    title= title
+    meta(charset='utf-8')
+    | !{cachify_css('/css/style.css')}
+    ...
+    body
+    ...
+      | !{cachify_js('/js/site.js')}
+      block scripts
+
 In production mode, a call to ``cachify_js`` will produce a single script tag
 like:
 
