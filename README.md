@@ -72,13 +72,13 @@ middleware which works with these same requests.
 ## In a Jade template
 
     ...
-    title= title
+    title= Dashboard: Hamsters of North America
     meta(charset='utf-8')
-    | !{cachify_css('/css/style.css')}
+    | !{cachify_css('/css/dashboard.min.css')}
     ...
     body
     ...
-      | !{cachify_js('/js/site.js')}
+      | !{cachify_js('/js/main.min.js')}
       block scripts
 
 In production mode, a call to ``cachify_js`` will produce a single script tag
