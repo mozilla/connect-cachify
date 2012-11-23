@@ -148,4 +148,4 @@ Patches are welcome! To run unit tests...
     nodeunit test
 
 ## Wordpress Cachify ##
-Does this all sound like gobbledygook? Maybe your looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
+Does this all sound like gobbledygook? Maybe you're looking for [Wordpress cachify plugin](http://wordpress.org/extend/plugins/cachify/) instead of ``connect-cachify``.
