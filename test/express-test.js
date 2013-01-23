@@ -55,7 +55,7 @@ exports.setup = nodeunit.testCase({
     test.equal(express3.version, EXPRESS_3_VER);
     [express2, express3].forEach(function (express, i) {
       var app = i === 0 ? express.createServer() : express();
-      app.use(cachify.setup());
+      app.use(cachify.setup([]));
       app.use(function (req, res, next) {
         var locals = res.locals();
         test.ok(!! locals.cachify);
@@ -67,7 +67,7 @@ exports.setup = nodeunit.testCase({
       var port = server.address().port;
       console.log('Started web server on port ' + port);
       var resText = "";
-      var req = http.request({ port: port, path: '/'}, function (res) {
+      var req = http.request({ port: port, path: '/baddecafe1/foo.js'}, function (res) {
         test.equal(res.statusCode, 200);
         res.on('data', function (chunk) {
           resText += chunk;
