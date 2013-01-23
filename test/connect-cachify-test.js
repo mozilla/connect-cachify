@@ -95,6 +95,8 @@ exports.setup = nodeunit.testCase({
               "debug option puts hash in all urls");
     files = cachify.cachify("/js/main.min.js", {tag_format: '<script src="%s" defer></script>'}).split('\n');
     test.equal(files[0], '<script src="/d41d8cd98f/js/lib/jquery.js" defer></script>');
+    hints = cachify.cachify_prefetch("/js/main.min.js").split('\n');
+    test.equal(hints[0], '<link rel="prefetch" href="/d41d8cd98f/js/lib/jquery.js">');
     test.done();
   },
   "Development mode": function (test) {
@@ -135,7 +137,11 @@ exports.setup = nodeunit.testCase({
               "All urls created");
     test.equal(files[0], '/js/lib/jquery.js',
               "No hashes in all urls during development");
+    var hints = cachify.cachify_prefetch("/js/main.min.js").split('\n');
+    test.ok(hints.length, "Multiple link tags");
+    test.equal(hints[0], '<link rel="prefetch" href="/js/lib/jquery.js">');
     mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
       test.ok(resp.state.header > 0);
@@ -171,7 +177,10 @@ exports.setup = nodeunit.testCase({
               "Hashes in all urls in production");
     var file = cachify.cachify("/js/main.min.js");
     test.equal(file, "/d41d8cd98f/js/main.min.js");
+    var hint = cachify.cachify_prefetch("/js/main.min.js");
+    test.equal(hint, '<link rel="prefetch" href="/d41d8cd98f/js/main.min.js">');
     mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
       test.ok(resp.state.cachify);
@@ -210,7 +219,10 @@ exports.setup = nodeunit.testCase({
               "Hashes in all urls in production");
     var file = cachify.cachify("/js/main.min.js");
     test.equal(file, "http://example.com/v/d41d8cd98f/js/main.min.js");
+    var hint = cachify.cachify_prefetch("/js/main.min.js");
+    test.equal(hint, '<link rel="prefetch" href="http://example.com/v/d41d8cd98f/js/main.min.js">');
     mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
       test.ok(resp.state.cachify);
@@ -248,6 +260,7 @@ exports.setup = nodeunit.testCase({
     test.equal(link, '<script src="/cachify/d41d8cd98f/other"></script>');
 
     mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
       test.ok(resp.state.cachify_js);
       test.ok(resp.state.cachify_css);
       test.ok(resp.state.cachify);
