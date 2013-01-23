@@ -15,8 +15,10 @@ var resetConfig = function () {
 
 var make_assets = function () { return {
   "/js/main.min.js": [
-    "/js/lib/jquery.js", "/js/lib/jquery-foomatic.js",
-    "/js/main.js"
+    "/js/lib/jquery.js",
+    "/js/lib/jquery-foomatic.js",
+    "/js/main.js",
+    "/js/font-loader.js#with_fragment_id"
   ]}; };
 
 exports.setup = nodeunit.testCase({
@@ -40,6 +42,9 @@ exports.setup = nodeunit.testCase({
         fs.writeFile('/tmp/js/main.js', "", "utf8", this);
       },
       function (err) {
+        fs.writeFile('/tmp/js/font-loader.js', "", "utf8", this);
+      },
+      function (err) {
         cb();
       }
     );
@@ -48,13 +53,16 @@ exports.setup = nodeunit.testCase({
     step(
       fs.unlink('/tmp/js/main.js', this),
       function (err) {
-        fs.unlink('/tmp/js/lib/jquery-foomatic.js', this);
+        fs.unlink('/tmp/js/main.min.js', this);
       },
       function (err) {
         fs.unlink('/tmp/js/lib/jquery.js', this);
       },
       function (err) {
-        fs.unlink('/tmp/js/main.min.js', this);
+        fs.unlink('/tmp/js/lib/jquery-foomatic.js', this);
+      },
+      function (err) {
+        fs.unlink('/tmp/js/font-loader.js', this);
       },
       function (err) {
         fs.rmdir('/tmp/js/lib', this);
@@ -76,10 +84,12 @@ exports.setup = nodeunit.testCase({
         files,
         links,
         mddlwr;
+
     mddlwr = cachify.setup(assets, {
                              root: '/tmp',
                              production: false,
                              debug: true});
+
     links = cachify.cachify_js("/js/main.min.js").split('\n');
     test.equal(links[0], '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
               "debug option puts hash in all urls");
@@ -112,11 +122,17 @@ exports.setup = nodeunit.testCase({
                       production: false
     });
     var links = cachify.cachify_js("/js/main.min.js").split('\n');
-    test.ok(links.length, "Multiple script tags");
+    test.equal(links.length, assets["/js/main.min.js"].length,
+              "All script tags created");
     test.equal(links[0], '<script src="/js/lib/jquery.js"></script>',
               "No hashes in all urls during development");
+    test.equal(links[3], '<script src="/js/font-loader.js#with_fragment_id"></script>',
+              "Fragment identifier in URL is preserved");
+    test.equal(cachify.uncached_resources.indexOf("/js/font-loader.js#with_fragment_id"), -1,
+              "Fragment identifiers are never sent to server, search on disk for resource by removing fragment id");
     var files = cachify.cachify("/js/main.min.js").split('\n');
-    test.ok(files.length, "Multiple script tags");
+    test.equal(files.length, assets["/js/main.min.js"].length,
+              "All urls created");
     test.equal(files[0], '/js/lib/jquery.js',
               "No hashes in all urls during development");
     mddlwr(req, resp, function () {
