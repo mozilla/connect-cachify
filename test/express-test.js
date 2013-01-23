@@ -61,6 +61,7 @@ exports.setup = nodeunit.testCase({
         test.ok(!! locals.cachify);
         test.ok(!! locals.cachify_css);
         test.ok(!! locals.cachify_js);
+        test.ok(!! locals.cachify_prefetch);
         res.send('ok');
       });
       var server = app.listen(0);
