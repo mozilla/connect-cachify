@@ -21,6 +21,23 @@ var make_assets = function () { return {
     "/js/font-loader.js#with_fragment_id"
   ]}; };
 
+function get_resp() {
+  return {
+    state: {},
+    local: function (key, value) {
+      this.state[key] = value;
+    },
+    setHeader: function (key, value) {
+      this.state[key] = value;
+      if (!this.state['header']) this.state['header'] = 0;
+      this.state['header'] += 1;
+    },
+    on: function (name, cb) {
+
+    }
+  };
+}
+
 exports.setup = nodeunit.testCase({
   setUp: function (cb) {
     resetConfig();
@@ -104,20 +121,7 @@ exports.setup = nodeunit.testCase({
         req = {
           url: '/d41d8cd98f/js/main.min.js'
         },
-        resp = {
-          state: {},
-          local: function (key, value) {
-            this.state[key] = value;
-          },
-          setHeader: function (key, value) {
-            this.state[key] = value;
-            if (!this.state['header']) this.state['header'] = 0;
-            this.state['header'] += 1;
-          },
-          on: function (name, cb) {
-
-          }
-        },
+        resp = get_resp(),
         mddlwr;
     mddlwr = cachify.setup(assets, {
                       root: '/tmp',
@@ -153,20 +157,7 @@ exports.setup = nodeunit.testCase({
         req = {
           url: '/d41d8cd98f/js/main.min.js'
         },
-        resp = {
-          state: {},
-          local: function (key, value) {
-            this.state[key] = value;
-          },
-          setHeader: function (key, value) {
-            this.state[key] = value;
-            if (!this.state['header']) this.state['header'] = 0;
-            this.state['header'] += 1;
-          },
-          on: function (name, cb) {
-
-          }
-        },
+        resp = get_resp(),
         mddlwr;
     mddlwr = cachify.setup(
         assets, {
@@ -194,20 +185,7 @@ exports.setup = nodeunit.testCase({
         req = {
           url: '/v/d41d8cd98f/js/main.min.js'
         },
-        resp = {
-          state: {},
-          local: function (key, value) {
-            this.state[key] = value;
-          },
-          setHeader: function (key, value) {
-            this.state[key] = value;
-            if (!this.state['header']) this.state['header'] = 0;
-            this.state['header'] += 1;
-          },
-          on: function (name, cb) {
-
-          }
-        },
+        resp = get_resp(),
         mddlwr;
     mddlwr = cachify.setup(
       assets, {
@@ -236,21 +214,9 @@ exports.setup = nodeunit.testCase({
         req = {
           url: '/cachify/d41d8cd98f/other'
         },
-        resp = {
-          state: {},
-          local: function (key, value) {
-            this.state[key] = value;
-          },
-          setHeader: function (key, value) {
-            this.state[key] = value;
-            if (!this.state['header']) this.state['header'] = 0;
-            this.state['header'] += 1;
-          },
-          on: function (name, cb) {
-
-          }
-        },
+        resp = get_resp(),
         mddlwr;
+
     mddlwr = cachify.setup(
         assets, {
           prefix: 'cachify',
