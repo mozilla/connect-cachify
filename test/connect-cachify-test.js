@@ -234,5 +234,36 @@ exports.setup = nodeunit.testCase({
       test.equal(req.url, '/other');
       test.done();
     });
+  },
+
+  "Production - look up paths in url_to_paths table": function (test) {
+    var assets = make_assets(),
+        req = {
+          url: '/d41d8cd98f/js/main.min.js'
+        },
+        resp = get_resp(),
+        url_to_paths = {
+          '/js/main.min.js': '/tmp/js/main.min.js',
+          '/js/lib/jquery.js': '/tmp/js/lib/jquery.js',
+          '/js/lib/jquery-footmatic.js': '/tmp/js/lib/jquery-foomatic.js',
+          '/js/main.js': '/tmp/js/main.js',
+          '/js/font-loader.js': '/tmp/js/font-loader.js'
+        },
+        mddlwr = cachify.setup(assets, {
+          url_to_paths: url_to_paths
+        });
+
+    // ensure the path to the file is looked up in the table.
+    var link = cachify.cachify_js("/js/main.min.js");
+    test.equal(link, '<script src="/d41d8cd98f/js/main.min.js"></script>',
+              "Hashes in urls in production if looking up resource in the table");
+    var file = cachify.cachify("/js/main.min.js");
+    test.equal(file, "/d41d8cd98f/js/main.min.js");
+
+    mddlwr(req, resp, function () {
+      test.equal(req.url, '/js/main.min.js');
+      test.done();
+    });
   }
+
 });
