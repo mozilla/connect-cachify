@@ -39,9 +39,16 @@ Instructions below are for Express 2, but Express 3 is also supported.
           '/css/dashboard.css'
         ]
     };
+
+    var url_to_paths = {
+      '/js/jquery.js': '/home/development/jquery/jquery.js',
+      '/css/reset.css': '/home/development/css-reset/reset.css'
+    };
+
     app.use(cachify.setup(assets, {
       root: __dirname,
-      production: your_config['use_minified_assets'],
+      url_to_paths: url_to_paths,
+      production: your_config['use_minified_assets']
     }));
 
 ``setup`` takes two parameters: assets and options. Assets is an associative
