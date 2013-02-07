@@ -238,10 +238,6 @@ exports.setup = nodeunit.testCase({
 
   "Production - look up paths in url_to_paths table": function (test) {
     var assets = make_assets(),
-        req = {
-          url: '/d41d8cd98f/js/main.min.js'
-        },
-        resp = get_resp(),
         url_to_paths = {
           '/js/main.min.js': '/tmp/js/main.min.js',
           '/js/lib/jquery.js': '/tmp/js/lib/jquery.js',
@@ -253,14 +249,26 @@ exports.setup = nodeunit.testCase({
           url_to_paths: url_to_paths
         });
 
-    // ensure the path to the file is looked up in the table.
+    // ensure cachify_js generates a cachified link in production.
+    //
+    // If the link comes back cachified, it means the url_to_paths table was
+    // used to look up the actual file to generate the SHA.
     var link = cachify.cachify_js("/js/main.min.js");
-    test.equal(link, '<script src="/d41d8cd98f/js/main.min.js"></script>',
-              "Hashes in urls in production if looking up resource in the table");
+    test.equal(link, '<script src="/d41d8cd98f/js/main.min.js"></script>');
+
+    // ensure cachify generates the correct cachified path in production.
     var file = cachify.cachify("/js/main.min.js");
     test.equal(file, "/d41d8cd98f/js/main.min.js");
 
+    // ensure the middleware responds to the cachified URL.
+    var req = {
+          url: '/d41d8cd98f/js/main.min.js'
+        },
+        resp = get_resp();
+
     mddlwr(req, resp, function () {
+      // make sure the hash is stripped out so that another middleware can take
+      // care of responding to the request.
       test.equal(req.url, '/js/main.min.js');
       test.done();
     });
