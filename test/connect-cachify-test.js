@@ -1,4 +1,5 @@
 var cachify  = require('../lib/connect-cachify'),
+    path     = require('path'),
     fs       = require('fs'),
     nodeunit = require('nodeunit'),
     step     = require('step');
@@ -234,5 +235,43 @@ exports.setup = nodeunit.testCase({
       test.equal(req.url, '/other');
       test.done();
     });
+  },
+
+  "Production - look up paths in url_to_paths table": function (test) {
+    var assets = make_assets(),
+        url_to_paths = {
+          // This file is permanently part of the repo. It's md5 checksum, as
+          // reported by md5, is d31da114e3ea4076b2acec51c328806c. The first 10
+          // characters are d31da114e3.
+          '/js/test-file.js': path.join(__dirname, 'test-data', 'test-file.js')
+        },
+        mddlwr = cachify.setup(assets, {
+          url_to_paths: url_to_paths
+        });
+
+    // ensure cachify_js generates a cachified link in production.
+    //
+    // If the link comes back cachified, it means the url_to_paths table was
+    // used to look up the actual file to generate the SHA.
+    var link = cachify.cachify_js("/js/test-file.js");
+    test.equal(link, '<script src="/d31da114e3/js/test-file.js"></script>');
+
+    // ensure cachify generates the correct cachified path in production.
+    var file = cachify.cachify("/js/test-file.js");
+    test.equal(file, "/d31da114e3/js/test-file.js");
+
+    // ensure the middleware responds to the cachified URL.
+    var req = {
+          url: '/d31da114e3/js/test-file.js'
+        },
+        resp = get_resp();
+
+    mddlwr(req, resp, function () {
+      // make sure the hash is stripped out so that another middleware can take
+      // care of responding to the request.
+      test.equal(req.url, '/js/test-file.js');
+      test.done();
+    });
   }
+
 });
