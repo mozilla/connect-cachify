@@ -1,11 +1,11 @@
 # connect-cachify API #
 
-The [README](../README.md) for this project has a good tutorial on using 
+The [README](../README.md) for this project has a good tutorial on using
 ``connect-cachify``. This documents the API and goes deep on all the options.
 
 ## setup(assets, [options]) ##
 
-Creates the cachify middleware and allows you to customizes how you'll use 
+Creates the cachify middleware and allows you to customizes how you'll use
 it in your Node.js app.
 
 ``assets`` is a dictionary where the keys are your production urls,
@@ -21,14 +21,41 @@ See the example below for format.
 * ``root`` - A fully qualified path which is a root where static
    resources are served up. This is the same value you'd send to the
    static middleware. (**Default: ``'.'``**)
+* ``url_to_paths`` - an associative array of URLs to absolute filename paths.
+  Useful to specify paths to files that are not in the ``root`` directory.
+   (**Default: ``{}``**)
 
 ### Example use of ``setup`` ###
 
-    var assets = { 
+    var assets = {
       '/js/main.min.js': ['/js/jquery.js', '/js/widget.js', '/js/main.js'],
       '/js/dashboard.js': ['/js/jquery.js', '/js/dashboard.js'],
       '/css/main.min.css': ['/css/reset.css', '/main.css'] };
     app.use(cachify.setup(assets, { root: __dirname }));
+
+### Using url_to_paths and root in ``setup`` ###
+
+``url_to_paths`` is an associative array that specifies the absolute path of an asset. This is useful for files that are not located under the root directory. In the following example, both jquery.js and reset.css are located outside of the root directory and would not normally be found by connect-cachify.
+
+    var assets = {
+      '/js/main.min.js': ['/js/jquery.js', '/js/widget.js', '/js/main.js'],
+      '/js/dashboard.js': ['/js/jquery.js', '/js/dashboard.js'],
+      '/css/main.min.css': ['/css/reset.css', '/main.css'] };
+
+    // specify paths outside of the root directory to find files.
+    var url_to_paths = {
+      '/js/jquery.js': '/home/development/jquery/jquery.js',
+      '/css/reset.css': '/home/development/css-reset/reset.css'
+    };
+
+    app.use(cachify.setup(assets, {
+      root: __dirname,
+      url_to_paths: url_to_paths
+    }));
+
+Both ``root`` and ``url_to_paths`` are optional, though it is safe to use them together.
+
+## Middleware Helper Functions ##
 
 The ``setup`` middleware will expose several **helpers** to your views:
 
@@ -36,7 +63,7 @@ The ``setup`` middleware will expose several **helpers** to your views:
 * cachify_css
 * cachify
 
-Using the optional ``prefix`` will slightly improve middleware performance 
+Using the optional ``prefix`` will slightly improve middleware performance
 when attempting to detect if a request is safe to re-write it's request url.
 
 ## cachify_js(production_js_url, [options]) ##
@@ -53,7 +80,7 @@ url. In development mode (``production: false``), Multiple script tags are
 generated, one per dependent file from the ``assets`` argument to the ``setup`` function.
 
 ### Example EJS template: ###
-      
+
       </p>
       <%- cachify_js('/js/main.min.js') %>
     </body>
@@ -73,7 +100,7 @@ url. In development mode (``production: false``), Multiple link tags are
 generated, one per dependent file from the ``assets`` argument to the ``setup`` function.
 
 ### Example EJS template: ###
-      
+
       </p>
       <%- cachify_css('/css/main.min.css') %>
     </body>
@@ -94,9 +121,10 @@ url. In development mode (``production: false``), Multiple tags are
 generated, one per dependent file from the ``assets`` argument to the ``setup`` function.
 
 ### Example EJS template: ###
-      
+
       </p>
       <%- cachify('/js/login.min.js', {
             tag_format: '<script src="%s" defer></script>'}) %>
     </body>
     </html>
+
