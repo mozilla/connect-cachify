@@ -246,6 +246,8 @@ exports.setup = nodeunit.testCase({
         assets, {
           root: '/tmp'
     });
+    // ensure that middleware does not re-write cachified urls that
+    // don't match the current file contents.
     var before = req.url;
     mddlwr(req, resp, function () {
       test.ok(req.url == before);
