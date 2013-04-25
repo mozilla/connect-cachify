@@ -34,7 +34,6 @@ function get_resp() {
       this.state['header'] += 1;
     },
     on: function (name, cb) {
-
     }
   };
 }
@@ -236,7 +235,25 @@ exports.setup = nodeunit.testCase({
       test.done();
     });
   },
-
+  "Production mode, mismatched checksum, not substituted": function (test) {
+    var assets = make_assets(),
+        req = {
+          url: '/e41d8cd98f/js/main.min.js'
+        },
+        resp = get_resp(),
+        mddlwr;
+    mddlwr = cachify.setup(
+        assets, {
+          root: '/tmp'
+    });
+    // ensure that middleware does not re-write cachified urls that
+    // don't match the current file contents.
+    var before = req.url;
+    mddlwr(req, resp, function () {
+      test.ok(req.url == before);
+      test.done();
+    });
+  },
   "Production - look up paths in url_to_paths table": function (test) {
     var assets = make_assets(),
         url_to_paths = {

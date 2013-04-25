@@ -77,7 +77,7 @@ exports.setup = nodeunit.testCase({
           test.equal(resText, 'ok');
           app.close ? app.close() : server.close();
           if (1 === i) test.done();
-        });   
+        });
       });
       req.end();
     });
