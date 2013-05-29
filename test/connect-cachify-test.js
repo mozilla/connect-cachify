@@ -110,6 +110,19 @@ exports.setup = nodeunit.testCase({
     links = cachify.cachify_js("/js/main.min.js").split('\n');
     test.equal(links[0], '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
               "debug option puts hash in all urls");
+
+    links = cachify.cachify_js("/js/main.min.js",
+        { defer: true }).split('\n');
+    test.equal(links[0],
+        '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
+              "defer: true does not add defer attribute with production=false");
+
+    links = cachify.cachify_js("/js/main.min.js",
+        { async: true }).split('\n');
+    test.equal(links[0],
+        '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
+              "async: true does not async attribute with production=false");
+
     files = cachify.cachify("/js/main.min.js", {tag_format: '<script src="%s" defer></script>'}).split('\n');
     test.equal(files[0], '<script src="/d41d8cd98f/js/lib/jquery.js" defer></script>');
     hints = cachify.cachify_prefetch("/js/main.min.js").split('\n');
@@ -166,6 +179,19 @@ exports.setup = nodeunit.testCase({
     var link = cachify.cachify_js("/js/main.min.js");
     test.equal(link, '<script src="/d41d8cd98f/js/main.min.js"></script>',
               "Hashes in all urls in production");
+
+    links = cachify.cachify_js("/js/main.min.js",
+        { defer: true }).split('\n');
+    test.equal(links[0],
+        '<script src="/d41d8cd98f/js/main.min.js" defer></script>',
+              "defer: true adds defer attribute with production=true");
+
+    links = cachify.cachify_js("/js/main.min.js",
+        { async: true }).split('\n');
+    test.equal(links[0],
+        '<script src="/d41d8cd98f/js/main.min.js" async></script>',
+              "async: true adds async attribute with production=true");
+
     var file = cachify.cachify("/js/main.min.js");
     test.equal(file, "/d41d8cd98f/js/main.min.js");
     var hint = cachify.cachify_prefetch("/js/main.min.js");
