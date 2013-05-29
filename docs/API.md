@@ -74,6 +74,8 @@ Helper function for generating ``script`` tags for your Javascript files.
 ``options`` is an optional dictionary with the following optional value:
 
 * ``hash`` - MD5 hash to use instead of calculating from disk (**Default: none**)
+* ``defer`` - if true, adds the defer attribute to scripts in production mode. (**Default: false**)
+* ``async`` - if true, adds the async attribute to scripts in production mode. (**Default: false**)
 
 In production mode, a single script tag is generated, with a cache-busting
 url. In development mode (``production: false``), Multiple script tags are
