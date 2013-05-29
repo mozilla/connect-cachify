@@ -114,38 +114,14 @@ exports.setup = nodeunit.testCase({
     links = cachify.cachify_js("/js/main.min.js",
         { defer: true }).split('\n');
     test.equal(links[0],
-        '<script src="/d41d8cd98f/js/lib/jquery.js" defer></script>',
-              "defer: true adds defer attribute to dev and prod");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { defer_debug: true }).split('\n');
-    test.equal(links[0],
-        '<script src="/d41d8cd98f/js/lib/jquery.js" defer></script>',
-              "defer_debug: true adds defer attribute in debug");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { defer_production: true }).split('\n');
-    test.equal(links[0],
         '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
-              "defer_production: does not add defer attribute in debug");
+              "defer: true does not add defer attribute with production=false");
 
     links = cachify.cachify_js("/js/main.min.js",
         { async: true }).split('\n');
     test.equal(links[0],
-        '<script src="/d41d8cd98f/js/lib/jquery.js" async></script>',
-              "async: true adds async attribute to dev and prod");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { async_debug: true }).split('\n');
-    test.equal(links[0],
-        '<script src="/d41d8cd98f/js/lib/jquery.js" async></script>',
-              "async_debug: true adds async attribute in debug");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { async_production: true }).split('\n');
-    test.equal(links[0],
         '<script src="/d41d8cd98f/js/lib/jquery.js"></script>',
-              "async_production: does not add async attribute in debug");
+              "async: true does not async attribute with production=false");
 
     files = cachify.cachify("/js/main.min.js", {tag_format: '<script src="%s" defer></script>'}).split('\n');
     test.equal(files[0], '<script src="/d41d8cd98f/js/lib/jquery.js" defer></script>');
@@ -208,37 +184,13 @@ exports.setup = nodeunit.testCase({
         { defer: true }).split('\n');
     test.equal(links[0],
         '<script src="/d41d8cd98f/js/main.min.js" defer></script>',
-              "defer: true adds defer attribute to dev and prod");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { defer_debug: true }).split('\n');
-    test.equal(links[0],
-        '<script src="/d41d8cd98f/js/main.min.js"></script>',
-              "defer_debug: true does not add defer attribute in prod");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { defer_production: true }).split('\n');
-    test.equal(links[0],
-        '<script src="/d41d8cd98f/js/main.min.js" defer></script>',
-              "defer_production: does not add defer attribute in prod");
+              "defer: true adds defer attribute with production=true");
 
     links = cachify.cachify_js("/js/main.min.js",
         { async: true }).split('\n');
     test.equal(links[0],
         '<script src="/d41d8cd98f/js/main.min.js" async></script>',
-              "async: true adds async attribute to dev and prod");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { async_debug: true }).split('\n');
-    test.equal(links[0],
-        '<script src="/d41d8cd98f/js/main.min.js"></script>',
-              "async_debug: true does not add async attribute in prod");
-
-    links = cachify.cachify_js("/js/main.min.js",
-        { async_production: true }).split('\n');
-    test.equal(links[0],
-        '<script src="/d41d8cd98f/js/main.min.js" async></script>',
-              "async_production: does not add async attribute in prod");
+              "async: true adds async attribute with production=true");
 
     var file = cachify.cachify("/js/main.min.js");
     test.equal(file, "/d41d8cd98f/js/main.min.js");
