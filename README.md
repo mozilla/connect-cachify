@@ -6,7 +6,7 @@ behavior for assets easier.
 It is a set of middleware and view helper functions for the Node.js express framework.
 
 This does not provide in-memory caching, middleware caching, or many other
-types of caching. Cashify is focused on reducing the number of HTTP requests
+types of caching. Cachify is focused on reducing the number of HTTP requests
 to your web nodes.
 
 ## Installation ##
