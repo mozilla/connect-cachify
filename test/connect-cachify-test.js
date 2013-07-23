@@ -315,6 +315,30 @@ exports.setup = nodeunit.testCase({
       test.equal(req.url, '/js/test-file.js');
       test.done();
     });
+  },
+  "URLs without SHA won't be processed": function (test) {
+    var assets = make_assets(),
+        url_to_paths = {
+          // This file is permanently part of the repo. It's md5 checksum, as
+          // reported by md5, is d31da114e3ea4076b2acec51c328806c. The first 10
+          // characters are d31da114e3.
+          '/js/test-file.js': path.join(__dirname, 'test-data', 'test-file.js')
+        },
+        mddlwr = cachify.setup(assets, {
+          url_to_paths: url_to_paths
+        });
+
+    // ensure the middleware responds to the cachified URL.
+    var req = {
+          url: '/some/unknown/code.js'
+        },
+        resp = get_resp();
+
+    mddlwr(req, resp, function () {
+      // Unknown paths do not get treated like SHAs and stripped.
+      test.equal(req.url, '/some/unknown/code.js');
+      test.done();
+    });
   }
 
 });
