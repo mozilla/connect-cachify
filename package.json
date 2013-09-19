@@ -5,6 +5,10 @@
   "keywords": ["cache", "HTTP", "expires", "asset", "max-age", "caching"],
   "version": "0.0.15",
   "homepage": "http://github.com/mozilla/connect-cachify",
+  "licenses": [{
+    "type": "MPL2",
+    "url": "https://github.com/mozilla/connect-cachify/blob/master/LICENSE"
+  }],
   "repository": {
     "type": "git",
     "url": "https://github.com/mozilla/connect-cachify.git"
