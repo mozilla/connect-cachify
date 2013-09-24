@@ -165,6 +165,34 @@ exports.setup = nodeunit.testCase({
       test.done();
     });
   },
+  "Development mode with url query string": function (test) {
+    var assets = make_assets(),
+        mddlwr;
+    mddlwr = cachify.setup(assets, {
+      root: '/tmp',
+      production: false
+    });
+    var links = cachify.cachify_js("/js/main.min.js?triedPassive=true").split('\n');
+    test.equal(links.length, assets["/js/main.min.js"].length,
+              "All script tags created");
+    test.equal(links[0], '<script src="/js/lib/jquery.js?triedPassive=true"></script>',
+              "No hashes in all urls during development");
+    test.equal(links[3], '<script src="/js/font-loader.js?triedPassive=true#with_fragment_id"></script>',
+              "Fragment identifier in URL is preserved");
+    test.equal(cachify.uncached_resources.indexOf("/js/font-loader.js?triedPassive=true#with_fragment_id"), -1,
+              "Fragment identifiers are never sent to server, search on disk for resource by removing fragment id");
+
+    var files = cachify.cachify("/js/main.min.js?triedPassive=true").split('\n');
+    test.equal(files.length, assets["/js/main.min.js"].length,
+              "All urls created");
+    test.equal(files[0], '/js/lib/jquery.js?triedPassive=true',
+              "No hashes in all urls during development");
+
+    var hints = cachify.cachify_prefetch("/js/main.min.js?triedPassive=true").split('\n');
+    test.ok(hints.length, "Multiple link tags");
+    test.equal(hints[0], '<link rel="prefetch" href="/js/lib/jquery.js?triedPassive=true">');
+    test.done();
+  },
   "Production mode": function (test) {
     var assets = make_assets(),
         req = {
@@ -206,6 +234,28 @@ exports.setup = nodeunit.testCase({
       test.done();
     });
   },
+  "Production mode with url query string" : function (test) {
+    var assets = make_assets(),
+      req = {
+        url: '/d41d8cd98f/js/main.min.js?triedPassive=true'
+      },
+      resp = get_resp(),
+      mddlwr;
+    mddlwr = cachify.setup(
+      assets, {
+        root: '/tmp'
+      });
+
+    mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
+      test.ok(resp.state.cachify_js);
+      test.ok(resp.state.cachify_css);
+      test.ok(resp.state.cachify);
+      test.ok(resp.state.header > 0);
+      test.equal(req.url, '/js/main.min.js?triedPassive=true');
+      test.done();
+    });
+  },
   "Production mode with absolute URL in prefix": function (test) {
     var assets = make_assets(),
         req = {
@@ -235,6 +285,29 @@ exports.setup = nodeunit.testCase({
       test.done();
     });
   },
+  "Production mode with absolute URL in prefix and url query string" : function (test) {
+    var assets = make_assets(),
+      req = {
+        url: '/v/d41d8cd98f/js/main.min.js?triedPassive=true'
+      },
+      resp = get_resp(),
+      mddlwr;
+    mddlwr = cachify.setup(
+        assets, {
+        root: '/tmp',
+        prefix: 'http://example.com/v/'
+      });
+    
+    mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
+      test.ok(resp.state.cachify_js);
+      test.ok(resp.state.cachify_css);
+      test.ok(resp.state.cachify);
+      test.ok(resp.state.header > 0);
+      test.equal(req.url, '/js/main.min.js?triedPassive=true');
+      test.done();
+    });
+  },
   "Custom prefix works with non-file assets": function (test) {
     var assets = make_assets(),
         req = {
@@ -258,6 +331,32 @@ exports.setup = nodeunit.testCase({
       test.ok(resp.state.cachify);
       test.ok(resp.state.header > 0);
       test.equal(req.url, '/other');
+      test.done();
+    });
+  },
+  "Custom prefix with non-file assets and url query string": function (test) {
+    var assets = make_assets(),
+      req = {
+        url: '/cachify/d41d8cd98f/other?triedPassive=true'
+      },
+      resp = get_resp(),
+      mddlwr;
+
+    mddlwr = cachify.setup(
+      assets, {
+        prefix: 'cachify',
+        root: '/tmp'
+      });
+    var link = cachify.cachify_js("/other", {hash: 'd41d8cd98f'});
+    test.equal(link, '<script src="/cachify/d41d8cd98f/other"></script>');
+
+    mddlwr(req, resp, function () {
+      test.ok(resp.state.cachify_prefetch);
+      test.ok(resp.state.cachify_js);
+      test.ok(resp.state.cachify_css);
+      test.ok(resp.state.cachify);
+      test.ok(resp.state.header > 0);
+      test.equal(req.url, '/other?triedPassive=true');
       test.done();
     });
   },
