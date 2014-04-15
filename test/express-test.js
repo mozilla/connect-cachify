@@ -59,7 +59,7 @@ exports.setup = nodeunit.testCase({
         });
     },
     tearDown: function(cb) {
-        [express2dir, express3dir, express3dir].forEach(function(expressDir) {
+        [express2dir, express3dir, express4dir].forEach(function(expressDir) {
             console.log('Removing ' + expressDir);
             shell.rm('-rf', expressDir);
         });
