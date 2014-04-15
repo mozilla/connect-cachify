@@ -23,6 +23,7 @@ const EXPRESS_4_VER = '4.0.0';
 
 exports.setup = nodeunit.testCase({
     setUp: function(cb) {
+        var count = 0;
         [{
             dir: express2dir,
             ver: EXPRESS_2_VER
@@ -49,10 +50,15 @@ exports.setup = nodeunit.testCase({
                 }
                 if (0 === i) {
                     express2 = require(path.join(express2dir, 'node_modules/express'));
+                    count++;
                 } else if (1 === i) {
                     express3 = require(path.join(express3dir, 'node_modules/express'));
+                    count++;
                 } else {
                     express4 = require(path.join(express4dir, 'node_modules/express'));
+                    count++;
+                }
+                if (count === 3) {
                     cb();
                 }
             });
