@@ -52,7 +52,6 @@ exports.setup = nodeunit.testCase({
                 } else if (1 === i) {
                     express3 = require(path.join(express3dir, 'node_modules/express'));
                 } else {
-                    console.log(cb);
                     express4 = require(path.join(express4dir, 'node_modules/express'));
                     cb();
                 }
