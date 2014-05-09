@@ -3,7 +3,7 @@
   "name": "connect-cachify",
   "description": "Connect middleware to provide easy frontend caching.",
   "keywords": ["cache", "HTTP", "expires", "asset", "max-age", "caching"],
-  "version": "0.0.15",
+  "version": "0.0.16",
   "homepage": "http://github.com/mozilla/connect-cachify",
   "licenses": [{
     "type": "MPL2",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/mozilla/connect-cachify.git"
   },
-  "bugs": { 
+  "bugs": {
     "url": "https://github.com/mozilla/connect-cachify/issues"
   },
   "main": "index",
