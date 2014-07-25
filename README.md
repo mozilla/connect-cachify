@@ -35,7 +35,7 @@ Instructions below are for Express 2, but Express 3 is also supported.
         ],
         "/css/dashboard.min.css": [
           '/css/reset.css',
-          '/css/common.css'
+          '/css/common.css',
           '/css/dashboard.css'
         ]
     };
